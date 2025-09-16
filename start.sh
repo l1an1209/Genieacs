@@ -38,18 +38,20 @@ echo -e "${GREEN}Iniciando serviços do GenieACS com pm2...${NC}"
 start_service() {
   local BIN="$1"
   local NAME="$2"
+  local EXTRA="$3" # argumentos extras
   if [ -f "$BIN" ]; then
-    $PM2 start "$BIN" --name "$NAME" -- --port $PORT --log-level info
+    $PM2 start "$BIN" --name "$NAME" -- $EXTRA
     echo -e "${GREEN}$NAME iniciado com sucesso${NC}"
   else
     echo -e "${RED}Arquivo $BIN não encontrado!${NC}"
   fi
 }
 
-start_service "./bin/genieacs-cwmp" "genieacs-cwmp"
-start_service "./bin/genieacs-fs" "genieacs-fs"
-start_service "./bin/genieacs-nbi" "genieacs-nbi"
-start_service "./bin/genieacs-ui" "genieacs-ui"
+# Inicia serviços
+start_service "./bin/genieacs-cwmp" "genieacs-cwmp" "--port $PORT --log-level info"
+start_service "./bin/genieacs-fs"   "genieacs-fs" ""
+start_service "./bin/genieacs-nbi"  "genieacs-nbi" ""
+start_service "./bin/genieacs-ui"   "genieacs-ui" "--port $PORT"
 
 echo -e "${GREEN}Todos os serviços foram inicializados. Monitorando logs...${NC}"
 
