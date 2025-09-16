@@ -21,10 +21,11 @@
     "genieacs-ui": "bin/genieacs-ui"
   },
   "dependencies": {
-    "@breejs/later": "^4.2.0",
+     "@breejs/later": "^4.2.0",
     "@koa/bodyparser": "^5.1.1",
     "@koa/router": "^13.1.0",
     "bson": "^4.7.2",
+    "esbuild": "^0.21.4",
     "espresso-iisojs": "^1.0.8",
     "iconv-lite": "^0.6.3",
     "ipaddr.js": "^2.2.0",
@@ -38,7 +39,7 @@
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
-    "@types/codemirror": "^5.60.15",
+   "@types/codemirror": "^5.60.15",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/koa": "^2.15.0",
     "@types/koa-compress": "^4.0.6",
@@ -49,7 +50,6 @@
     "@typescript-eslint/eslint-plugin": "^7.12.0",
     "@typescript-eslint/parser": "^7.12.0",
     "codemirror": "^5.65.16",
-    "esbuild": "^0.21.4",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "mithril": "^2.2.2",
