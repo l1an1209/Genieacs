@@ -7,11 +7,7 @@
     "url": "https://github.com/genieacs/genieacs.git"
   },
   "homepage": "https://genieacs.com",
-  "keywords": [
-    "TR-069",
-    "CWMP",
-    "ACS"
-  ],
+  "keywords": ["TR-069", "CWMP", "ACS"],
   "author": {
     "name": "GenieACS Inc.",
     "url": "https://genieacs.com"
@@ -64,12 +60,12 @@
     "yaml": "^1.10.2"
   },
   "engines": {
-    "node": ">=12.13.0"
+    "node": "18.x"
   },
   "scripts": {
     "test": "esbuild --log-level=warning --bundle --platform=node --target=node18 --packages=external --sourcemap=inline --outdir=test test/*.ts && node --test --enable-source-maps test/*.js && rm test/*.js",
-    "lint": "esbuild build/lint.ts --bundle --platform=node --target=node16 --packages=external | node",
-    "build": "esbuild build/build.ts --bundle --platform=node --target=node12 --packages=external | node",
+    "lint": "esbuild build/lint.ts --bundle --platform=node --target=node18 --packages=external | node",
+    "build": "esbuild build/build.ts --bundle --platform=node --target=node18 --outdir=bin",
     "start": "node bin/genieacs-cwmp",
     "start-ui": "node bin/genieacs-ui",
     "start-nbi": "node bin/genieacs-nbi"
