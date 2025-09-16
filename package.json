@@ -18,7 +18,7 @@
     "build-cwmp": "esbuild lib/cwmp.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-cwmp",
     "build-fs": "esbuild lib/fs.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-fs",
     "build-nbi": "esbuild lib/nbi.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-nbi",
-    "build-ui": "if not exist build mkdir build && echo export const APP_JS=\\\"/app.js\\\"; export const APP_CSS=\\\"/app.css\\\"; export const FAVICON_PNG=\\\"/favicon.png\\\"; > build/assets.ts && npx esbuild lib/ui.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-ui"
+    "build-ui": "node scripts/generateAssets.js && npx esbuild lib/ui.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-ui"
   },
   "dependencies": {
     "@breejs/later": "^4.2.0",
@@ -36,6 +36,7 @@
     "koa-send": "^5.0.1",
     "mongodb": "^4.16.0",
     "parsimmon": "^1.18.1",
-    "seedrandom": "^3.0.5"
+    "seedrandom": "^3.0.5",
+    "mkdirp": "^1.0.4"
   }
 }
