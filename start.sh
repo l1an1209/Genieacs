@@ -20,8 +20,9 @@ npm run build-ui   || { echo -e "${RED}Falha ao gerar ui${NC}"; exit 1; }
 
 echo -e "${GREEN}Build concluído com sucesso!${NC}"
 
-# Define porta padrão
-PORT=${PORT:-3000}
+# Porta fornecida pelo Render (obrigatório)
+PORT=${PORT:?A variável de porta do Render não está definida}
+echo -e "${GREEN}Usando porta $PORT${NC}"
 
 # Caminho do PM2 local
 PM2="./node_modules/.bin/pm2"
@@ -32,28 +33,28 @@ if [ ! -f "$PM2" ]; then
   npm install pm2 --save
 fi
 
-echo -e "${GREEN}Iniciando serviços do GenieACS com pm2...${NC}"
+echo -e "${GREEN}Iniciando serviços do GenieACS...${NC}"
 
 # Função para iniciar serviço e verificar existência do binário
 start_service() {
   local BIN="$1"
   local NAME="$2"
-  local EXTRA="$3" # argumentos extras
   if [ -f "$BIN" ]; then
-    $PM2 start "$BIN" --name "$NAME" -- $EXTRA
+    echo -e "${GREEN}Iniciando $NAME na porta $PORT...${NC}"
+    $PM2 start "$BIN" --name "$NAME" -- --port $PORT
     echo -e "${GREEN}$NAME iniciado com sucesso${NC}"
   else
     echo -e "${RED}Arquivo $BIN não encontrado!${NC}"
   fi
 }
 
-# Inicia serviços
-start_service "./bin/genieacs-cwmp" "genieacs-cwmp" "--port $PORT --log-level info"
-start_service "./bin/genieacs-fs"   "genieacs-fs" ""
-start_service "./bin/genieacs-nbi"  "genieacs-nbi" ""
-start_service "./bin/genieacs-ui"   "genieacs-ui" "--port $PORT"
+# Inicia todos os serviços
+start_service "./bin/genieacs-cwmp" "genieacs-cwmp"
+start_service "./bin/genieacs-fs" "genieacs-fs"
+start_service "./bin/genieacs-nbi" "genieacs-nbi"
+start_service "./bin/genieacs-ui" "genieacs-ui"
 
 echo -e "${GREEN}Todos os serviços foram inicializados. Monitorando logs...${NC}"
 
-# Mantém container vivo
+# Mantém container vivo com PM2 logs
 $PM2 logs
