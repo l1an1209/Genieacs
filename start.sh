@@ -1,16 +1,7 @@
 #!/bin/bash
-set -e
-
-echo "Iniciando GenieACS..."
-
-# Garante permissões
-chmod +x bin/genieacs-*
-
-# Inicia os serviços em background
-./bin/genieacs-cwmp &
-./bin/genieacs-fs &
-./bin/genieacs-nbi &
-./bin/genieacs-ui &
-
-# Mantém o shell ativo para o Render não encerrar
+# start.sh corrigido para Render.com ou Linux
+node ./bin/genieacs-cwmp &
+node ./bin/genieacs-fs &
+node ./bin/genieacs-nbi &
+node ./bin/genieacs-ui &
 wait
