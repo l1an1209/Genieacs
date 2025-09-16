@@ -21,7 +21,7 @@
     "genieacs-ui": "bin/genieacs-ui"
   },
   "dependencies": {
-     "@breejs/later": "^4.2.0",
+    "@breejs/later": "^4.2.0",
     "@koa/bodyparser": "^5.1.1",
     "@koa/router": "^13.1.0",
     "bson": "^4.7.2",
@@ -39,7 +39,7 @@
     "seedrandom": "^3.0.5"
   },
   "devDependencies": {
-   "@types/codemirror": "^5.60.15",
+    "@types/codemirror": "^5.60.15",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/koa": "^2.15.0",
     "@types/koa-compress": "^4.0.6",
@@ -69,7 +69,7 @@
     "build-cwmp": "esbuild lib/cwmp.ts --bundle --platform=node --target=node18 --outfile=bin/genieacs-cwmp",
     "build-fs": "esbuild lib/fs.ts --bundle --platform=node --target=node18 --outfile=bin/genieacs-fs",
     "build-nbi": "esbuild lib/nbi.ts --bundle --platform=node --target=node18 --outfile=bin/genieacs-nbi",
-    "build-ui": "mkdir -p build && echo 'export const APP_JS = \"/app.js\"; export const APP_CSS = \"/app.css\"; export const FAVICON_PNG = \"/favicon.png\";' > build/assets.ts && esbuild lib/ui.ts --bundle --platform=node --target=node18 --outfile=bin/genieacs-ui",
+    "build-ui": "if not exist build mkdir build && echo export const APP_JS=\\\"/app.js\\\"; export const APP_CSS=\\\"/app.css\\\"; export const FAVICON_PNG=\\\"/favicon.png\\\"; > build/assets.ts && npx esbuild lib/ui.ts --bundle --platform=node --target=node18 --outfile=bin/genieacs-ui",
     "start": "node bin/genieacs-cwmp",
     "start-ui": "node bin/genieacs-ui",
     "start-nbi": "node bin/genieacs-nbi"
