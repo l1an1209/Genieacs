@@ -2,17 +2,6 @@
   "name": "genieacs",
   "version": "1.2.13",
   "description": "A TR-069 Auto Configuration Server (ACS)",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/genieacs/genieacs.git"
-  },
-  "homepage": "https://genieacs.com",
-  "keywords": ["TR-069", "CWMP", "ACS"],
-  "author": {
-    "name": "GenieACS Inc.",
-    "url": "https://genieacs.com"
-  },
-  "license": "AGPL-3.0",
   "private": true,
   "bin": {
     "genieacs-cwmp": "bin/genieacs-cwmp",
@@ -20,13 +9,23 @@
     "genieacs-nbi": "bin/genieacs-nbi",
     "genieacs-ui": "bin/genieacs-ui"
   },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "start": "bash start.sh",
+    "build": "npm run build-cwmp && npm run build-fs && npm run build-nbi && npm run build-ui",
+    "build-cwmp": "esbuild lib/cwmp.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-cwmp",
+    "build-fs": "esbuild lib/fs.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-fs",
+    "build-nbi": "esbuild lib/nbi.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-nbi",
+    "build-ui": "if not exist build mkdir build && echo export const APP_JS=\\\"/app.js\\\"; export const APP_CSS=\\\"/app.css\\\"; export const FAVICON_PNG=\\\"/favicon.png\\\"; > build/assets.ts && npx esbuild lib/ui.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-ui"
+  },
   "dependencies": {
     "@breejs/later": "^4.2.0",
     "@koa/bodyparser": "^5.1.1",
     "@koa/router": "^13.1.0",
     "bson": "^4.7.2",
     "esbuild": "^0.21.4",
-    "espresso-iisojs": "^1.0.8",
     "iconv-lite": "^0.6.3",
     "ipaddr.js": "^2.2.0",
     "jsonwebtoken": "^9.0.2",
@@ -37,41 +36,5 @@
     "mongodb": "^4.16.0",
     "parsimmon": "^1.18.1",
     "seedrandom": "^3.0.5"
-  },
-  "devDependencies": {
-    "@types/codemirror": "^5.60.15",
-    "@types/jsonwebtoken": "^9.0.6",
-    "@types/koa": "^2.15.0",
-    "@types/koa-compress": "^4.0.6",
-    "@types/mithril": "^2.2.6",
-    "@types/node": "^20.14.2",
-    "@types/parsimmon": "^1.10.9",
-    "@types/seedrandom": "^3.0.8",
-    "@typescript-eslint/eslint-plugin": "^7.12.0",
-    "@typescript-eslint/parser": "^7.12.0",
-    "codemirror": "^5.65.16",
-    "eslint": "^8.57.0",
-    "eslint-config-prettier": "^9.1.0",
-    "mithril": "^2.2.2",
-    "prettier": "^3.3.1",
-    "sql.js": "^1.10.3",
-    "svgo": "^3.3.2",
-    "typescript": "^5.4.5",
-    "yaml": "^1.10.2"
-  },
-  "engines": {
-    "node": ">=20.0.0"
-  },
-  "scripts": {
-    "test": "esbuild --log-level=warning --bundle --platform=node --target=node20 --packages=external --sourcemap=inline --outdir=test test/*.ts && node --test --enable-source-maps test/*.js && rm test/*.js",
-    "lint": "esbuild build/lint.ts --bundle --platform=node --target=node20 --packages=external | node",
-    "build": "npm run build-cwmp && npm run build-fs && npm run build-nbi && npm run build-ui",
-    "build-cwmp": "esbuild lib/cwmp.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-cwmp",
-    "build-fs": "esbuild lib/fs.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-fs",
-    "build-nbi": "esbuild lib/nbi.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-nbi",
-    "build-ui": "if not exist build mkdir build && echo export const APP_JS=\\\"/app.js\\\"; export const APP_CSS=\\\"/app.css\\\"; export const FAVICON_PNG=\\\"/favicon.png\\\"; > build/assets.ts && npx esbuild lib/ui.ts --bundle --platform=node --target=node20 --outfile=bin/genieacs-ui",
-    "start": "bash start.sh",
-    "start-ui": "node bin/genieacs-ui",
-    "start-nbi": "node bin/genieacs-nbi"
   }
 }
