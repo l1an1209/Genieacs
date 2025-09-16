@@ -1,45 +1,57 @@
 #!/bin/bash
-# start.sh - Inicializa os serviços do GenieACS com logs coloridos
 
-# Cores
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-NC='\033[0m' # Sem cor
+# ===============================
+# Start script para GenieACS no Render
+# ===============================
 
-echo -e "${YELLOW}Iniciando serviços do GenieACS...${NC}"
+# Cores para logs
+GREEN="\033[0;32m"
+RED="\033[0;31m"
+YELLOW="\033[1;33m"
+NC="\033[0m" # Sem cor
 
-# CWMP
-if [ -f ./bin/genieacs-cwmp ]; then
-    pm2 start ./bin/genieacs-cwmp --name genieacs-cwmp -- --port $PORT --log-level info
-    echo -e "${GREEN}genieacs-cwmp iniciado com sucesso!${NC}"
-else
-    echo -e "${RED}Arquivo bin/genieacs-cwmp não encontrado!${NC}"
+echo -e "${GREEN}Iniciando build do GenieACS...${NC}"
+
+# Gera todos os binários
+npm run build-cwmp || { echo -e "${RED}Falha ao gerar cwmp${NC}"; exit 1; }
+npm run build-fs   || { echo -e "${RED}Falha ao gerar fs${NC}"; exit 1; }
+npm run build-nbi  || { echo -e "${RED}Falha ao gerar nbi${NC}"; exit 1; }
+npm run build-ui   || { echo -e "${RED}Falha ao gerar ui${NC}"; exit 1; }
+
+echo -e "${GREEN}Build concluído com sucesso!${NC}"
+
+# Define porta padrão
+PORT=${PORT:-3000}
+
+# Caminho do PM2 local
+PM2="./node_modules/.bin/pm2"
+
+# Verifica se pm2 está instalado
+if [ ! -f "$PM2" ]; then
+  echo -e "${YELLOW}pm2 não encontrado localmente, instalando...${NC}"
+  npm install pm2 --save
 fi
 
-# FS
-if [ -f ./bin/genieacs-fs ]; then
-    pm2 start ./bin/genieacs-fs --name genieacs-fs
-    echo -e "${GREEN}genieacs-fs iniciado com sucesso!${NC}"
-else
-    echo -e "${RED}Arquivo bin/genieacs-fs não encontrado!${NC}"
-fi
+echo -e "${GREEN}Iniciando serviços do GenieACS com pm2...${NC}"
 
-# NBI
-if [ -f ./bin/genieacs-nbi ]; then
-    pm2 start ./bin/genieacs-nbi --name genieacs-nbi
-    echo -e "${GREEN}genieacs-nbi iniciado com sucesso!${NC}"
-else
-    echo -e "${RED}Arquivo bin/genieacs-nbi não encontrado!${NC}"
-fi
+# Função para iniciar serviço e verificar existência do binário
+start_service() {
+  local BIN="$1"
+  local NAME="$2"
+  if [ -f "$BIN" ]; then
+    $PM2 start "$BIN" --name "$NAME" -- --port $PORT --log-level info
+    echo -e "${GREEN}$NAME iniciado com sucesso${NC}"
+  else
+    echo -e "${RED}Arquivo $BIN não encontrado!${NC}"
+  fi
+}
 
-# UI
-if [ -f ./bin/genieacs-ui ]; then
-    pm2 start ./bin/genieacs-ui --name genieacs-ui
-    echo -e "${GREEN}genieacs-ui iniciado com sucesso!${NC}"
-else
-    echo -e "${RED}Arquivo bin/genieacs-ui não encontrado!${NC}"
-fi
+start_service "./bin/genieacs-cwmp" "genieacs-cwmp"
+start_service "./bin/genieacs-fs" "genieacs-fs"
+start_service "./bin/genieacs-nbi" "genieacs-nbi"
+start_service "./bin/genieacs-ui" "genieacs-ui"
 
-echo -e "${YELLOW}Todos os serviços foram inicializados. Monitorando logs...${NC}"
-pm2 logs
+echo -e "${GREEN}Todos os serviços foram inicializados. Monitorando logs...${NC}"
+
+# Mantém container vivo
+$PM2 logs
