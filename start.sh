@@ -1,20 +1,14 @@
 #!/bin/bash
-# Sai se houver algum erro
 set -e
 
-# Instala dependências
+# Instala dependências e gera binários
 npm install
-
-# Build dos binários
 npm run build
 
-# Inicia GenieACS
-# CWMP precisa abrir a porta $PORT para Render detectar
-node bin/genieacs-cwmp --port $PORT --log-level info &
-
-# FS e NBI podem rodar em background
+# Inicia FS e NBI em background
 node bin/genieacs-fs --log-level info &
 node bin/genieacs-nbi --log-level info &
 
-# Mantém o container ativo
-wait
+# Inicia CWMP como processo principal e vincula a porta do Render
+exec node bin/genieacs-cwmp --port $PORT --log-level info
+chmod +x start.sh
