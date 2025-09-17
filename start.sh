@@ -1,18 +1,31 @@
 #!/bin/bash
 set -e
 
-# Criar pasta de logs se não existir
-mkdir -p logs
+# ===============================
+# CONFIGURAÇÃO DE VARIÁVEIS
+# ===============================
 
-# Defina suas URLs do MongoDB e Redis
+# MongoDB
 export MONGO_URL="mongodb+srv://luanpa082:L1an1010@cluster0.n3wzlxp.mongodb.net/genieacs?retryWrites=true&w=majority"
+
+# Redis (senha atualizada)
 export REDIS_URL="rediss://default:GyF7WltUj6MDZ7xo7qTg568ppJUpzW38GyF7WltUj6MDZ7xo7qTg568ppJUpzW38@redis-14320.crce207.sa-east-1-2.ec2.redns.redis-cloud.com:14320"
 
-# Iniciar serviços com logs
-node ./bin/genieacs-cwmp &> logs/cwmp.log &
-node ./bin/genieacs-fs   &> logs/fs.log   &
-node ./bin/genieacs-nbi  &> logs/nbi.log  &
-node ./bin/genieacs-ui   &> logs/ui.log   &
+# Porta opcional para o UI
+PORT=${PORT:-3000}
 
-# Esperar os processos terminarem
-wait
+# ===============================
+# INICIAR MÓDULOS DO GENIEACS
+# ===============================
+
+echo "Iniciando GenieACS CWMP..."
+node ./bin/genieacs-cwmp &
+
+echo "Iniciando GenieACS File Server..."
+node ./bin/genieacs-fs &
+
+echo "Iniciando GenieACS NBI (API)..."
+node ./bin/genieacs-nbi &
+
+echo "Iniciando GenieACS UI na porta $PORT..."
+exec node ./bin/genieacs-ui
